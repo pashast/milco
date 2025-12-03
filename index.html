@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Карта з маркерами</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+        #coords {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h3>Введіть координати (lat,lng; lat,lng; ...)</h3>
+<textarea id="coords" rows="3">50.4501,30.5234; 49.8397,24.0297</textarea>
+<button onclick="showMarkers()">Показати точки</button>
+
+<div id="map"></div>
+
+<script>
+let map;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 49.0, lng: 31.0 },
+        zoom: 6
+    });
+}
+
+function showMarkers() {
+    const input = document.getElementById("coords").value;
+    const coordsArray = input.split(";");
+
+    coordsArray.forEach(pair => {
+        const trimmed = pair.trim();
+        if (!trimmed) return;
+
+        const [latStr, lngStr] = trimmed.split(",");
+        const lat = parseFloat(latStr);
+        const lng = parseFloat(lngStr);
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+            new google.maps.Marker({
+                position: { lat, lng },
+                map: map
+            });
+        }
+    });
+}
+</script>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+
+</body>
+</html>
