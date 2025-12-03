@@ -13,18 +13,24 @@
             padding: 8px;
             margin-bottom: 10px;
         }
+        button {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
 <h3>Введіть координати (lat,lng; lat,lng; ...)</h3>
 <textarea id="coords" rows="3">50.4501,30.5234; 49.8397,24.0297</textarea>
+<br>
 <button onclick="showMarkers()">Показати точки</button>
+<button onclick="resetMarkers()">Скинути</button>
 
 <div id="map"></div>
 
 <script>
 let map;
+let markers = []; // зберігатимемо всі маркери
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -34,6 +40,9 @@ function initMap() {
 }
 
 function showMarkers() {
+    // перед додаванням нових маркерів — видаляємо старі
+    clearMarkers();
+
     const input = document.getElementById("coords").value;
     const coordsArray = input.split(";");
 
@@ -46,12 +55,23 @@ function showMarkers() {
         const lng = parseFloat(lngStr);
 
         if (!isNaN(lat) && !isNaN(lng)) {
-            new google.maps.Marker({
+            const marker = new google.maps.Marker({
                 position: { lat, lng },
                 map: map
             });
+            markers.push(marker);
         }
     });
+}
+
+function clearMarkers() {
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+}
+
+function resetMarkers() {
+    clearMarkers();
+    document.getElementById("coords").value = "";
 }
 </script>
 
